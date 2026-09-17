@@ -3,32 +3,397 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>MunchMate</title>
-
-    <link rel="stylesheet" href="css/main.css">
 
     <meta
         name="description"
         content="MunchMate - A simple online food ordering and delivery platform."
     >
+
+    <!-- Main Global CSS -->
+    <link rel="stylesheet" href="css/main.css">
 </head>
 
 <body>
 
-    <div class="container">
+    <!-- ==============================
+         Header / Navigation
+         ============================== -->
 
-        <h1>Welcome to MunchMate</h1>
+    <header class="main-header">
 
-        <p>Your food ordering platform.</p>
+        <div class="container navbar">
 
-        <button class="btn btn-primary">
-            Get Started
-        </button>
+            <!-- Logo -->
+            <a href="index.html" class="brand">
+                <span class="brand-icon">🍴</span>
+                <span class="brand-name">MunchMate</span>
+            </a>
 
-    </div>
+            <!-- Navigation -->
+            <nav class="main-nav" aria-label="Main navigation">
 
+                <a href="index.html" class="nav-link active">
+                    Home
+                </a>
+
+                <a href="#" class="nav-link">
+                    Restaurants
+                </a>
+
+                <a href="#" class="nav-link">
+                    Orders
+                </a>
+
+                <a href="#" class="nav-link">
+                    Login
+                </a>
+
+            </nav>
+
+            <!-- Cart -->
+            <a href="#" class="cart-link">
+                🛒
+                <span>Cart</span>
+                <span class="cart-count">0</span>
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- ==============================
+         Main Content
+         ============================== -->
+
+    <main>
+
+        <!-- Hero Section -->
+
+        <section class="hero-section">
+
+            <div class="container hero-content">
+
+                <div class="hero-text">
+
+                    <p class="hero-label">
+                        Delicious food, just a few clicks away
+                    </p>
+
+                    <h1>
+                        Your favourite food,
+                        <span>delivered.</span>
+                    </h1>
+
+                    <p class="hero-description">
+                        Discover restaurants, explore delicious dishes,
+                        add your favourites to the cart and order with
+                        MunchMate.
+                    </p>
+
+                    <div class="hero-actions">
+
+                        <a href="#" class="btn btn-primary">
+                            Explore Food
+                        </a>
+
+                        <a href="#" class="btn btn-secondary">
+                            View Restaurants
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div class="hero-image">
+
+                    <div class="food-placeholder">
+                        🍕
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Categories -->
+
+        <section class="categories-section">
+
+            <div class="container">
+
+                <div class="section-heading">
+
+                    <div>
+                        <p class="section-label">
+                            Explore
+                        </p>
+
+                        <h2>
+                            What are you craving?
+                        </h2>
+                    </div>
+
+                </div>
+
+
+                <div class="category-grid">
+
+                    <a href="#" class="category-card">
+                        <span class="category-icon">🍛</span>
+                        <span>Biryani</span>
+                    </a>
+
+                    <a href="#" class="category-card">
+                        <span class="category-icon">🍕</span>
+                        <span>Pizza</span>
+                    </a>
+
+                    <a href="#" class="category-card">
+                        <span class="category-icon">🍔</span>
+                        <span>Burgers</span>
+                    </a>
+
+                    <a href="#" class="category-card">
+                        <span class="category-icon">🥘</span>
+                        <span>South Indian</span>
+                    </a>
+
+                    <a href="#" class="category-card">
+                        <span class="category-icon">🥡</span>
+                        <span>Chinese</span>
+                    </a>
+
+                    <a href="#" class="category-card">
+                        <span class="category-icon">🍰</span>
+                        <span>Desserts</span>
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Popular Restaurants -->
+
+        <section class="restaurants-section">
+
+            <div class="container">
+
+                <div class="section-heading">
+
+                    <div>
+                        <p class="section-label">
+                            Discover
+                        </p>
+
+                        <h2>
+                            Popular Restaurants
+                        </h2>
+                    </div>
+
+                    <a href="#" class="view-all">
+                        View All →
+                    </a>
+
+                </div>
+
+
+                <div class="restaurant-grid">
+
+                    <article class="restaurant-card">
+
+                        <div class="restaurant-image">
+                            🍛
+                        </div>
+
+                        <div class="restaurant-info">
+
+                            <h3>
+                                Spice Garden
+                            </h3>
+
+                            <p class="restaurant-cuisine">
+                                Biryani • North Indian
+                            </p>
+
+                            <div class="restaurant-meta">
+
+                                <span class="rating">
+                                    ★ 4.5
+                                </span>
+
+                                <span>
+                                    •
+                                </span>
+
+                                <span>
+                                    30–40 min
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="restaurant-card">
+
+                        <div class="restaurant-image">
+                            🍕
+                        </div>
+
+                        <div class="restaurant-info">
+
+                            <h3>
+                                Pizza Hub
+                            </h3>
+
+                            <p class="restaurant-cuisine">
+                                Pizza • Fast Food
+                            </p>
+
+                            <div class="restaurant-meta">
+
+                                <span class="rating">
+                                    ★ 4.3
+                                </span>
+
+                                <span>
+                                    •
+                                </span>
+
+                                <span>
+                                    25–35 min
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <article class="restaurant-card">
+
+                        <div class="restaurant-image">
+                            🥘
+                        </div>
+
+                        <div class="restaurant-info">
+
+                            <h3>
+                                South Spice
+                            </h3>
+
+                            <p class="restaurant-cuisine">
+                                South Indian • Snacks
+                            </p>
+
+                            <div class="restaurant-meta">
+
+                                <span class="rating">
+                                    ★ 4.6
+                                </span>
+
+                                <span>
+                                    •
+                                </span>
+
+                                <span>
+                                    20–30 min
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Call To Action -->
+
+        <section class="cta-section">
+
+            <div class="container cta-content">
+
+                <div>
+
+                    <p class="section-label">
+                        MunchMate
+                    </p>
+
+                    <h2>
+                        Hungry? Let's get you something delicious.
+                    </h2>
+
+                    <p>
+                        Browse restaurants and discover your next
+                        favourite meal.
+                    </p>
+
+                </div>
+
+                <a href="#" class="btn btn-primary">
+                    Start Ordering
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ==============================
+         Footer
+         ============================== -->
+
+    <footer class="main-footer">
+
+        <div class="container footer-content">
+
+            <div>
+
+                <h3>
+                    🍴 MunchMate
+                </h3>
+
+                <p>
+                    Your simple and convenient food ordering platform.
+                </p>
+
+            </div>
+
+            <p>
+                © 2026 MunchMate. College Project.
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <!-- JavaScript Configuration -->
     <script src="js/config.js"></script>
 
 </body>
