@@ -18,10 +18,16 @@
     >
 
     <!-- Global CSS -->
-    <link rel="stylesheet" href="../../css/main.css">
+    <link
+        rel="stylesheet"
+        href="../../css/main.css"
+    >
 
-    <!-- Customer Page CSS -->
-    <link rel="stylesheet" href="../../css/customer.css">
+    <!-- Customer CSS -->
+    <link
+        rel="stylesheet"
+        href="../../css/customer.css"
+    >
 
 </head>
 
@@ -36,6 +42,7 @@
     <header class="main-header">
 
         <div class="container navbar">
+
 
             <!-- Brand -->
 
@@ -69,6 +76,7 @@
                     Home
                 </a>
 
+
                 <a
                     href="#restaurants"
                     class="nav-link"
@@ -76,12 +84,14 @@
                     Restaurants
                 </a>
 
+
                 <a
                     href="orders.html"
                     class="nav-link"
                 >
                     Orders
                 </a>
+
 
                 <a
                     href="../auth/login.html"
@@ -136,6 +146,7 @@
 
             <div class="container">
 
+
                 <!-- Delivery Address -->
 
                 <div class="delivery-location">
@@ -143,6 +154,7 @@
                     <span class="location-icon">
                         📍
                     </span>
+
 
                     <div>
 
@@ -165,10 +177,12 @@
 
                     <input
                         type="search"
-                        id="foodSearch"
+                        id="searchInput"
                         placeholder="Search for food, restaurants or cuisines..."
                         aria-label="Search food, restaurants or cuisines"
+                        autocomplete="off"
                     >
+
 
                     <button
                         type="button"
@@ -194,21 +208,30 @@
 
             <div class="container customer-hero-content">
 
+
                 <div class="customer-hero-text">
 
                     <p class="hero-label">
                         Welcome to MunchMate
                     </p>
 
+
                     <h1>
+
                         What are you
-                        <span>craving today?</span>
+
+                        <span>
+                            craving today?
+                        </span>
+
                     </h1>
+
 
                     <p>
                         Discover delicious food from restaurants
                         around you and get it delivered to your door.
                     </p>
+
 
                     <a
                         href="#categories"
@@ -218,6 +241,7 @@
                     </a>
 
                 </div>
+
 
 
                 <div class="customer-hero-image">
@@ -244,6 +268,7 @@
         >
 
             <div class="container">
+
 
                 <div class="section-heading">
 
@@ -281,9 +306,12 @@
              TRENDING FOOD
              ==================================== -->
 
-        <section class="customer-section customer-section-gray">
+        <section
+            class="customer-section customer-section-gray"
+        >
 
             <div class="container">
+
 
                 <div class="section-heading">
 
@@ -293,7 +321,7 @@
                             Trending
                         </p>
 
-                        <h2>
+                        <h2 id="trendingTitle">
                             Popular Right Now
                         </h2>
 
@@ -324,6 +352,7 @@
         <section class="customer-section">
 
             <div class="container">
+
 
                 <div class="section-heading">
 
@@ -368,6 +397,7 @@
 
             <div class="container">
 
+
                 <div class="section-heading">
 
                     <div>
@@ -381,6 +411,7 @@
                         </h2>
 
                     </div>
+
 
                     <a
                         href="#"
@@ -415,15 +446,18 @@
 
             <div class="container cta-content">
 
+
                 <div>
 
                     <p class="section-label">
                         MunchMate
                     </p>
 
+
                     <h2>
                         Hungry? Let's find something delicious.
                     </h2>
+
 
                     <p>
                         Explore restaurants and discover your
@@ -456,11 +490,13 @@
 
         <div class="container footer-content">
 
+
             <div>
 
                 <h3>
                     🍴 MunchMate
                 </h3>
+
 
                 <p>
                     Your simple and convenient food ordering platform.
@@ -483,20 +519,20 @@
          JAVASCRIPT
          ======================================== -->
 
-    <!-- Configuration -->
     <script src="../../js/config.js"></script>
 
-    <!-- Mock Data -->
     <script src="../../js/data/categories.js"></script>
+
     <script src="../../js/data/menu.js"></script>
 
-    <!-- Services -->
     <script src="../../js/services/categoryService.js"></script>
+
     <script src="../../js/services/menuService.js"></script>
+
     <script src="../../js/services/restaurantService.js"></script>
 
-    <!-- Customer Page -->
     <script src="../../js/pages/customer.js"></script>
+
 
 </body>
 

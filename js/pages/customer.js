@@ -1,418 +1,362 @@
-/* ========================================
-   MunchMate - Customer Home Page
-   ======================================== */
+document.addEventListener("DOMContentLoaded", function () {
 
+    loadCategories();
+    loadTrendingFoods();
+    loadRecommendedFoods();
+    loadPopularRestaurants();
+    updateCartCount();
 
-/* ========================================
-   PAGE INITIALIZATION
-   ======================================== */
+    setupSearch();
 
-document.addEventListener(
-    "DOMContentLoaded",
-    function () {
-
-        loadCategories();
-
-        loadTrendingFood();
-
-        loadRecommendedFood();
-
-        loadRestaurants();
-
-        setupSearch();
-
-        updateCartCount();
-
-    }
-);
+});
 
 
 /* ========================================
    CATEGORIES
-   ======================================== */
+======================================== */
 
 function loadCategories() {
 
-    const categoryGrid =
-        document.getElementById(
-            "categoryGrid"
-        );
+    const container =
+        document.getElementById("categoryGrid");
 
-    if (!categoryGrid) {
+    if (!container) {
         return;
     }
 
+    if (typeof getAllCategories !== "function") {
+
+        console.error(
+            "Category service is not available."
+        );
+
+        return;
+    }
 
     const categories =
         getAllCategories();
 
+    container.innerHTML = "";
 
-    categoryGrid.innerHTML =
-        categories.map(
-            category => `
+    categories.forEach(function (category) {
 
-                <a
-                    href="#trendingFoodGrid"
-                    class="category-card"
-                    data-category="${category.name}"
-                >
+        const card =
+            document.createElement("div");
 
-                    <span class="category-icon">
-                        ${category.image}
-                    </span>
+        card.className =
+            "category-card";
 
-                    <span>
-                        ${category.name}
-                    </span>
+        card.innerHTML = `
+            <div class="category-icon">
+                ${category.image}
+            </div>
 
-                </a>
+            <h3>
+                ${category.name}
+            </h3>
+        `;
 
-            `
-        ).join("");
+        card.addEventListener(
+            "click",
+            function () {
 
+                showCategoryFoods(
+                    category.name
+                );
 
-    setupCategoryClicks();
-}
-
-
-/* ========================================
-   CATEGORY CLICK
-   ======================================== */
-
-function setupCategoryClicks() {
-
-    const categoryCards =
-        document.querySelectorAll(
-            ".category-card"
+            }
         );
 
+        container.appendChild(card);
 
-    categoryCards.forEach(
-        card => {
+    });
 
-            card.addEventListener(
-                "click",
-                function (event) {
-
-                    event.preventDefault();
-
-                    const category =
-                        card.dataset.category;
-
-                    showCategoryFood(category);
-
-                }
-            );
-
-        }
-    );
 }
 
 
 /* ========================================
-   SHOW CATEGORY FOOD
-   ======================================== */
+   CATEGORY FOOD
+======================================== */
 
-function showCategoryFood(category) {
+function showCategoryFoods(categoryName) {
 
-    const food =
+    const foods =
         getFoodItemsByCategory(
-            category
+            categoryName
         );
 
-
-    const heading =
-        document.querySelector(
-            "#trendingFoodGrid"
-        );
-
-
-    if (!heading) {
-        return;
-    }
-
-
-    heading.innerHTML =
-        createFoodCards(food);
-
-
-    const trendingSection =
-        document.querySelector(
-            ".customer-section-gray"
-        );
-
-
-    if (trendingSection) {
-
-        trendingSection.scrollIntoView({
-            behavior: "smooth"
-        });
-
-    }
-}
-
-
-/* ========================================
-   TRENDING FOOD
-   ======================================== */
-
-function loadTrendingFood() {
-
-    const foodGrid =
+    const container =
         document.getElementById(
             "trendingFoodGrid"
         );
 
-    if (!foodGrid) {
+    const title =
+        document.getElementById(
+            "trendingTitle"
+        );
+
+    if (!container) {
         return;
     }
 
+    if (title) {
 
-    const food =
-        getBestsellerItems();
+        title.textContent =
+            categoryName + " Food";
 
+    }
 
-    foodGrid.innerHTML =
-        createFoodCards(food);
+    if (!foods || foods.length === 0) {
+
+        container.innerHTML = `
+            <div class="empty-state">
+
+                <h3>
+                    No food items found
+                </h3>
+
+                <p>
+                    No items are available
+                    in this category.
+                </p>
+
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML =
+        foods.map(function (food) {
+
+            return createFoodCard(food);
+
+        }).join("");
+
 }
 
 
 /* ========================================
-   RECOMMENDED FOOD
-   ======================================== */
+   TRENDING FOODS
+======================================== */
 
-function loadRecommendedFood() {
+function loadTrendingFoods() {
 
-    const foodGrid =
+    const container =
+        document.getElementById(
+            "trendingFoodGrid"
+        );
+
+    if (!container) {
+        return;
+    }
+
+    if (
+        typeof getBestsellerItems !==
+        "function"
+    ) {
+
+        console.error(
+            "Menu service is not available."
+        );
+
+        return;
+    }
+
+    const foods =
+        getBestsellerItems();
+
+    container.innerHTML =
+        foods.map(function (food) {
+
+            return createFoodCard(food);
+
+        }).join("");
+
+}
+
+
+/* ========================================
+   RECOMMENDED FOODS
+======================================== */
+
+function loadRecommendedFoods() {
+
+    const container =
         document.getElementById(
             "recommendedFoodGrid"
         );
 
-    if (!foodGrid) {
+    if (!container) {
         return;
     }
 
+    const foods =
+        getAllFoodItems();
 
-    /*
-     * Phase 1:
-     * Recommendations use mock data.
-     *
-     * Phase 2:
-     * This can later be replaced by
-     * an AI recommendation API.
-     */
+    const recommendedFoods =
+        foods
+            .filter(function (food) {
 
-    const food =
-        getAllFoodItems()
-            .filter(
-                item =>
-                    item.isAvailable === true
-            )
-            .slice(0, 4);
+                return Number(food.rating) >= 4.4;
 
+            })
+            .slice(0, 6);
 
-    foodGrid.innerHTML =
-        createFoodCards(food);
+    container.innerHTML =
+        recommendedFoods.map(
+            function (food) {
+
+                return createFoodCard(food);
+
+            }
+        ).join("");
+
 }
 
 
 /* ========================================
-   FOOD CARD CREATION
-   ======================================== */
+   FOOD CARD
+======================================== */
 
-function createFoodCards(foodItems) {
+function createFoodCard(food) {
 
-    if (
-        !foodItems ||
-        foodItems.length === 0
-    ) {
+    const icon =
+        getFoodIcon(food.category);
 
-        return `
+    const vegBadge =
+        food.isVeg
+            ? `<span class="veg-badge">VEG</span>`
+            : `<span class="nonveg-badge">NON-VEG</span>`;
 
-            <div class="empty-state">
+    const bestsellerBadge =
+        food.isBestseller
+            ? `<span class="bestseller-badge">
+                    Bestseller
+               </span>`
+            : "";
 
-                <div class="empty-state-icon">
-                    🍽️
-                </div>
+    return `
 
-                <h3>
-                    No food found
-                </h3>
+        <article class="food-card">
 
-                <p>
-                    Try exploring another category.
-                </p>
+            <div class="food-image">
+
+                <span class="food-icon">
+                    ${icon}
+                </span>
 
             </div>
 
-        `;
-    }
+            <div class="food-card-content">
 
+                <div class="food-badges">
 
-    return foodItems.map(
-        food => {
+                    ${vegBadge}
 
-            const restaurant =
-                getRestaurantById(
-                    food.restaurantId
-                );
+                    ${bestsellerBadge}
 
+                </div>
 
-            const restaurantName =
-                restaurant
-                    ? restaurant.name
-                    : "Restaurant";
+                <h3>
+                    ${food.name}
+                </h3>
 
+                <p class="food-description">
 
-            const foodIcon =
-                getFoodIcon(
-                    food.category
-                );
+                    ${
+                        food.description ||
+                        "Delicious and freshly prepared."
+                    }
 
+                </p>
 
-            return `
+                <div class="food-details">
 
-                <article
-                    class="food-card"
-                    data-food-id="${food.id}"
-                >
+                    <span class="food-price">
+                        ₹${food.price}
+                    </span>
 
-                    <div class="food-card-image">
+                    <span class="food-rating">
+                        ⭐ ${food.rating}
+                    </span>
 
-                        ${foodIcon}
+                </div>
 
-                        ${
-                            food.isBestseller
-                                ? `
-                                    <span class="food-card-tag">
-                                        Bestseller
-                                    </span>
-                                  `
-                                : ""
-                        }
+                <button
+                    type="button"
+                    class="btn btn-primary food-view-button"
+                    onclick="viewFood('${food.id}')">
 
-                    </div>
+                    View Item
 
+                </button>
 
-                    <div class="food-card-info">
+            </div>
 
-                        <h3>
-                            ${food.name}
-                        </h3>
+        </article>
 
+    `;
 
-                        <p class="food-card-description">
-                            ${food.description}
-                        </p>
-
-
-                        <div class="food-card-meta">
-
-                            <span class="food-card-rating">
-                                ★ ${food.rating}
-                            </span>
-
-                            <span class="food-card-price">
-                                ₹${food.price}
-                            </span>
-
-                        </div>
-
-
-                        <div class="food-card-actions">
-
-                            <span class="food-card-restaurant">
-                                ${restaurantName}
-                            </span>
-
-                            <button
-                                type="button"
-                                class="food-card-add"
-                                data-food-id="${food.id}"
-                            >
-                                Add
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                </article>
-
-            `;
-        }
-    ).join("");
 }
 
 
 /* ========================================
    FOOD ICON
-   ======================================== */
+======================================== */
 
 function getFoodIcon(category) {
 
     const icons = {
 
         "Biryani": "🍛",
-
         "Pizza": "🍕",
-
         "Burgers": "🍔",
-
-        "South Indian": "🥘",
-
+        "South Indian": "🥞",
         "North Indian": "🍲",
-
-        "Chinese": "🥡",
-
+        "Chinese": "🍜",
+        "Bakery": "🥐",
+        "Cafe": "☕",
         "Desserts": "🍰",
-
         "Beverages": "🥤",
-
-        "Snacks": "🥪",
-
-        "Fast Food": "🍟"
+        "Fast Food": "🍟",
+        "Street Food": "🌮",
+        "Snacks": "🥟",
+        "Thalis": "🍱",
+        "Healthy Food": "🥗"
 
     };
 
-
     return icons[category] || "🍽️";
+
 }
 
 
 /* ========================================
-   RESTAURANTS
-   ======================================== */
+   POPULAR RESTAURANTS
+======================================== */
 
-function loadRestaurants() {
+function loadPopularRestaurants() {
 
-    const restaurantGrid =
+    const container =
         document.getElementById(
             "restaurantGrid"
         );
 
-
-    if (!restaurantGrid) {
+    if (!container) {
         return;
     }
 
-
     const restaurants =
         getApprovedRestaurants();
-
 
     if (
         !restaurants ||
         restaurants.length === 0
     ) {
 
-        restaurantGrid.innerHTML = `
-
+        container.innerHTML = `
             <div class="empty-state">
-
-                <div class="empty-state-icon">
-                    🏪
-                </div>
 
                 <h3>
                     No restaurants available
@@ -423,94 +367,151 @@ function loadRestaurants() {
                 </p>
 
             </div>
-
         `;
 
         return;
     }
 
-
-    restaurantGrid.innerHTML =
+    container.innerHTML =
         restaurants.map(
-            restaurant => `
+            function (restaurant) {
 
-                <article
-                    class="restaurant-card"
-                    data-restaurant-id="${restaurant.id}"
-                >
+                return createRestaurantCard(
+                    restaurant
+                );
 
-                    <div class="restaurant-image">
-                        ${getRestaurantIcon(restaurant.name)}
-                    </div>
-
-
-                    <div class="restaurant-info">
-
-                        <h3>
-                            ${restaurant.name}
-                        </h3>
-
-
-                        <p class="restaurant-cuisine">
-                            ${restaurant.cuisine.join(" • ")}
-                        </p>
-
-
-                        <div class="restaurant-meta">
-
-                            <span class="rating">
-                                ★ ${restaurant.rating}
-                            </span>
-
-                            <span>
-                                •
-                            </span>
-
-                            <span>
-                                ${restaurant.location}
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </article>
-
-            `
+            }
         ).join("");
 
-
     setupRestaurantClicks();
+
+}
+
+
+/* ========================================
+   RESTAURANT CARD
+======================================== */
+
+function createRestaurantCard(
+    restaurant
+) {
+
+    const cuisineText =
+        Array.isArray(restaurant.cuisine)
+            ? restaurant.cuisine.join(" • ")
+            : restaurant.cuisine || "Restaurant";
+
+
+    return `
+
+        <article
+            class="restaurant-card"
+            data-restaurant-id="${restaurant.id}"
+        >
+
+            <div class="restaurant-image">
+
+                <span class="restaurant-icon">
+
+                    ${getRestaurantIcon(
+                        restaurant.name
+                    )}
+
+                </span>
+
+            </div>
+
+
+            <div class="restaurant-card-content">
+
+                <h3>
+                    ${restaurant.name}
+                </h3>
+
+                <p class="restaurant-cuisine">
+                    ${cuisineText}
+                </p>
+
+                <p class="restaurant-location">
+                    📍 ${restaurant.location}
+                </p>
+
+                <div class="restaurant-rating">
+
+                    ⭐ ${restaurant.rating}
+
+                </div>
+
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                >
+                    View Restaurant
+                </button>
+
+            </div>
+
+        </article>
+
+    `;
+
 }
 
 
 /* ========================================
    RESTAURANT ICON
-   ======================================== */
+======================================== */
 
 function getRestaurantIcon(name) {
 
+    const restaurantName =
+        String(name || "").toLowerCase();
+
+
     if (
-        name.toLowerCase().includes("pizza")
+        restaurantName.includes("pizza")
     ) {
+
         return "🍕";
+
     }
 
 
     if (
-        name.toLowerCase().includes("south")
+        restaurantName.includes("south")
     ) {
-        return "🥘";
+
+        return "🥞";
+
+    }
+
+
+    if (
+        restaurantName.includes("burger")
+    ) {
+
+        return "🍔";
+
+    }
+
+
+    if (
+        restaurantName.includes("cafe")
+    ) {
+
+        return "☕";
+
     }
 
 
     return "🍛";
+
 }
 
 
 /* ========================================
    RESTAURANT CLICK
-   ======================================== */
+======================================== */
 
 function setupRestaurantClicks() {
 
@@ -520,51 +521,44 @@ function setupRestaurantClicks() {
         );
 
 
-    cards.forEach(
-        card => {
+    cards.forEach(function (card) {
 
-            card.addEventListener(
-                "click",
-                function () {
+        card.addEventListener(
+            "click",
+            function () {
 
-                    const restaurantId =
-                        card.dataset.restaurantId;
+                const restaurantId =
+                    card.dataset.restaurantId;
 
-                    /*
-                     * Restaurant page will be created later.
-                     *
-                     * We store the selected restaurant
-                     * temporarily for Phase 1.
-                     */
 
-                    localStorage.setItem(
-                        "munchmate_selected_restaurant",
-                        restaurantId
-                    );
+                localStorage.setItem(
+                    "munchmate_selected_restaurant",
+                    restaurantId
+                );
 
-                    alert(
-                        "Restaurant page will be available soon."
-                    );
 
-                }
-            );
+                alert(
+                    "Restaurant page will be added next."
+                );
 
-        }
-    );
+            }
+        );
+
+    });
+
 }
 
 
 /* ========================================
-   SEARCH
-   ======================================== */
+   SEARCH SETUP
+======================================== */
 
 function setupSearch() {
 
     const searchInput =
         document.getElementById(
-            "foodSearch"
+            "searchInput"
         );
-
 
     const searchButton =
         document.getElementById(
@@ -572,10 +566,22 @@ function setupSearch() {
         );
 
 
-    if (
-        !searchInput ||
-        !searchButton
-    ) {
+    if (!searchInput) {
+
+        console.error(
+            "Search input not found."
+        );
+
+        return;
+    }
+
+
+    if (!searchButton) {
+
+        console.error(
+            "Search button not found."
+        );
+
         return;
     }
 
@@ -596,9 +602,9 @@ function setupSearch() {
         "keydown",
         function (event) {
 
-            if (
-                event.key === "Enter"
-            ) {
+            if (event.key === "Enter") {
+
+                event.preventDefault();
 
                 performSearch(
                     searchInput.value
@@ -608,151 +614,263 @@ function setupSearch() {
 
         }
     );
+
 }
 
 
 /* ========================================
-   PERFORM SEARCH
-   ======================================== */
+   SEARCH
+======================================== */
 
 function performSearch(searchText) {
 
     const query =
-        searchText.trim();
+        String(searchText || "")
+            .trim()
+            .toLowerCase();
 
 
-    if (!query) {
-
-        loadTrendingFood();
-
-        return;
-    }
-
-
-    const restaurantResults =
-        searchRestaurants(query);
-
-
-    const foodResults =
-        getAllFoodItems()
-            .filter(
-                food => {
-
-                    const name =
-                        food.name.toLowerCase();
-
-                    const description =
-                        food.description.toLowerCase();
-
-                    const category =
-                        food.category.toLowerCase();
-
-                    return (
-                        name.includes(
-                            query.toLowerCase()
-                        ) ||
-                        description.includes(
-                            query.toLowerCase()
-                        ) ||
-                        category.includes(
-                            query.toLowerCase()
-                        )
-                    );
-
-                }
-            );
-
-
-    const foodGrid =
+    const foodContainer =
         document.getElementById(
             "trendingFoodGrid"
         );
 
-
-    if (!foodGrid) {
-        return;
-    }
-
-
-    foodGrid.innerHTML =
-        createFoodCards(foodResults);
-
-
-    const restaurantsSection =
+    const restaurantContainer =
         document.getElementById(
-            "restaurants"
+            "restaurantGrid"
+        );
+
+    const title =
+        document.getElementById(
+            "trendingTitle"
         );
 
 
-    if (restaurantsSection) {
+    if (!query) {
 
-        const restaurantGrid =
-            document.getElementById(
-                "restaurantGrid"
-            );
+        loadTrendingFoods();
+        loadPopularRestaurants();
 
+        if (title) {
 
-        restaurantGrid.innerHTML =
-            restaurantResults.map(
-                restaurant => `
+            title.textContent =
+                "Trending Now";
 
-                    <article
-                        class="restaurant-card"
-                        data-restaurant-id="${restaurant.id}"
-                    >
+        }
 
-                        <div class="restaurant-image">
-                            ${getRestaurantIcon(restaurant.name)}
-                        </div>
-
-                        <div class="restaurant-info">
-
-                            <h3>
-                                ${restaurant.name}
-                            </h3>
-
-                            <p class="restaurant-cuisine">
-                                ${restaurant.cuisine.join(" • ")}
-                            </p>
-
-                            <div class="restaurant-meta">
-
-                                <span class="rating">
-                                    ★ ${restaurant.rating}
-                                </span>
-
-                                <span>
-                                    •
-                                </span>
-
-                                <span>
-                                    ${restaurant.location}
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </article>
-
-                `
-            ).join("");
-
-
-        setupRestaurantClicks();
-
-
-        restaurantsSection.scrollIntoView({
-            behavior: "smooth"
-        });
+        return;
 
     }
+
+
+    /* =========================
+       FOOD SEARCH
+    ========================== */
+
+    const allFoods =
+        getAllFoodItems();
+
+
+    const foodResults =
+        allFoods.filter(function (food) {
+
+            const name =
+                String(food.name || "")
+                    .toLowerCase();
+
+            const description =
+                String(
+                    food.description || ""
+                ).toLowerCase();
+
+            const category =
+                String(food.category || "")
+                    .toLowerCase();
+
+
+            return (
+                name.includes(query) ||
+                description.includes(query) ||
+                category.includes(query)
+            );
+
+        });
+
+
+    /* =========================
+       RESTAURANT SEARCH
+    ========================== */
+
+    const allRestaurants =
+        getApprovedRestaurants();
+
+
+    const restaurantResults =
+        allRestaurants.filter(
+            function (restaurant) {
+
+                const name =
+                    String(
+                        restaurant.name || ""
+                    ).toLowerCase();
+
+
+                const location =
+                    String(
+                        restaurant.location || ""
+                    ).toLowerCase();
+
+
+                const cuisineText =
+                    Array.isArray(
+                        restaurant.cuisine
+                    )
+                        ? restaurant.cuisine.join(" ")
+                        : String(
+                            restaurant.cuisine || ""
+                        );
+
+
+                const cuisine =
+                    cuisineText.toLowerCase();
+
+
+                return (
+                    name.includes(query) ||
+                    location.includes(query) ||
+                    cuisine.includes(query)
+                );
+
+            }
+        );
+
+
+    /* =========================
+       DISPLAY TITLE
+    ========================== */
+
+    if (title) {
+
+        title.textContent =
+            `Search Results for "${searchText}"`;
+
+    }
+
+
+    /* =========================
+       DISPLAY FOOD
+    ========================== */
+
+    if (foodContainer) {
+
+        if (foodResults.length === 0) {
+
+            foodContainer.innerHTML = `
+
+                <div class="empty-state">
+
+                    <h3>
+                        No food items found
+                    </h3>
+
+                    <p>
+                        Try searching for
+                        biryani, pizza, dosa,
+                        burger, etc.
+                    </p>
+
+                </div>
+
+            `;
+
+        } else {
+
+            foodContainer.innerHTML =
+                foodResults.map(
+                    function (food) {
+
+                        return createFoodCard(
+                            food
+                        );
+
+                    }
+                ).join("");
+
+        }
+
+    }
+
+
+    /* =========================
+       DISPLAY RESTAURANTS
+    ========================== */
+
+    if (restaurantContainer) {
+
+        if (
+            restaurantResults.length === 0
+        ) {
+
+            restaurantContainer.innerHTML = `
+
+                <div class="empty-state">
+
+                    <h3>
+                        No restaurants found
+                    </h3>
+
+                    <p>
+                        Try searching for
+                        a restaurant or cuisine.
+                    </p>
+
+                </div>
+
+            `;
+
+        } else {
+
+            restaurantContainer.innerHTML =
+                restaurantResults.map(
+                    function (restaurant) {
+
+                        return createRestaurantCard(
+                            restaurant
+                        );
+
+                    }
+                ).join("");
+
+            setupRestaurantClicks();
+
+        }
+
+    }
+
+}
+
+
+/* ========================================
+   VIEW FOOD
+======================================== */
+
+function viewFood(foodId) {
+
+    localStorage.setItem(
+        "munchmate_selected_food",
+        foodId
+    );
+
+    alert(
+        "Food item page will be added next."
+    );
+
 }
 
 
 /* ========================================
    CART COUNT
-   ======================================== */
+======================================== */
 
 function updateCartCount() {
 
@@ -761,28 +879,56 @@ function updateCartCount() {
             "cartCount"
         );
 
-
     if (!cartCount) {
         return;
     }
 
 
-    const cart =
-        JSON.parse(
+    let cart = [];
+
+
+    try {
+
+        const savedCart =
             localStorage.getItem(
                 "munchmate_cart"
-            )
-        ) || [];
+            );
+
+
+        if (savedCart) {
+
+            cart =
+                JSON.parse(savedCart);
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Unable to read cart:",
+            error
+        );
+
+        cart = [];
+
+    }
 
 
     const totalQuantity =
         cart.reduce(
-            (total, item) =>
-                total + item.quantity,
+            function (total, item) {
+
+                return (
+                    total +
+                    (Number(item.quantity) || 0)
+                );
+
+            },
             0
         );
 
 
     cartCount.textContent =
         totalQuantity;
+
 }
